@@ -1,9 +1,7 @@
 .PHONY: pypi, tag, shell, typecheck, pytest, test
 
 pypi:
-	rm -f dist/*
-	python setup.py sdist
-	twine upload --config-file=.pypirc dist/*
+	poetry publish
 	make tag
 
 tag:
