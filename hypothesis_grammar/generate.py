@@ -1,4 +1,4 @@
-from typing import Iterator, List
+from typing import Iterator, List, Tuple
 
 from hypothesis.core import given
 from hypothesis._settings import HealthCheck, Phase, Verbosity, settings
@@ -7,7 +7,7 @@ from hypothesis.strategies import SearchStrategy
 from hypothesis_grammar.types import intinf
 
 
-def examples(strategy: SearchStrategy) -> Iterator[List[str]]:
+def examples(strategy: SearchStrategy) -> List[Tuple[str, ...]]:
     """
     This is lifted from:
     hypothesis/strategies/_internal/strategies.py

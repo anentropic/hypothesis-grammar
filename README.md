@@ -1,6 +1,12 @@
 Hypothesis-Grammar
 ==================
 
+[![Build Status](https://travis-ci.org/anentropic/hypothesis-grammar.svg?branch=master)](https://travis-ci.org/anentropic/hypothesis-grammar)
+[![Latest PyPI version](https://badge.fury.io/py/hypothesis-grammar.svg)](https://pypi.python.org/pypi/hypothesis-grammar/)
+
+![Python 3.7](https://img.shields.io/badge/Python%203.7--brightgreen.svg)
+![Python 3.8](https://img.shields.io/badge/Python%203.8--brightgreen.svg)  
+
 (pre-alpha... the stuff I've tried all works, not well tested yet though)
 
 ## What is it?
@@ -73,7 +79,7 @@ def test_grammar(example):
     assert any(noun in example for noun in nouns)
 ```
 
-The grammar is taken from an example in the NLTK docs and converted into our (restricted) Lark format.
+The grammar is taken from an example in the NLTK docs and converted into our "simplified Lark" format.
 
 `start="s"` tells the parser that the start rule is `s`.
 
@@ -82,6 +88,8 @@ As you can see, we have produced a Hypothesis strategy which is able to generate
 The output will always be a flat list of token strings. If you want a sentence you can just `" ".join(example)`.
 
 But the grammar doesn't have to describe text, it might represent a sequence of actions for example. In that case you might want to convert your result tokens into object instances, which could be done via a lookup table.
+
+(But if you're generating action sequences for tests then probably you should check out Hypothesis' [stateful testing](https://hypothesis.readthedocs.io/en/latest/stateful.html) features first)
 
 ## Grammar details
 

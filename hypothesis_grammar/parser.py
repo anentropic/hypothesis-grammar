@@ -5,6 +5,7 @@ from typing import Iterable, List, TypeVar, Union
 
 import inject
 from hypothesis import strategies as st
+from hypothesis.strategies._internal.misc import JustStrategy
 from lark import Lark, Token, Transformer
 
 from hypothesis_grammar.types import Deps, Modifiers
@@ -49,6 +50,10 @@ def _chain(lists: st.SearchStrategy) -> st.SearchStrategy:
 
 
 def _listify(single: st.SearchStrategy) -> st.SearchStrategy:
+    """
+    Put the result of `single` strategy into a list
+    (all strategies should return lists)
+    """
     @st.composite
     def listify_(draw):
         return [draw(single)]
@@ -58,56 +63,72 @@ def _listify(single: st.SearchStrategy) -> st.SearchStrategy:
     return strategy
 
 
-T = TypeVar("T")
+T = TypeVar("T", bound=st.SearchStrategy)
 
 
 class StrategyBuilder(Transformer):
-    def __init__(self, start):
+    def __init__(self, start: str):
         self.strategies = {}
         self._start = start
 
-    def STRING(self, token: Token) -> str:
+    def STRING(self, token: Token) -> st.SearchStrategy:
+        # (all strategies should return lists)
         return st.just([literal_eval(token.value)])
 
-    def REGEXP(self, token: Token) -> str:
+    def REGEXP(self, token: Token) -> st.SearchStrategy:
         # regex is /delimited/
         return _listify(st.from_regex(token.value[1:-1], fullmatch=True))
 
     def _flatten(self, children: List[T]) -> T:
         return children[0]
 
-    def _store_st(self, top_level: List[Union[Token, List[T]]]) -> T:
-        token, children = top_level
-        self.strategies[token.value] = children[0]
-        return children[0]
+    def _store_st(self, top_level: List[Union[Token, T]]) -> T:
+        token, strategy = top_level
+        self.strategies[token.value] = strategy
+        return strategy
 
-    def _deferred(self, children) -> st.SearchStrategy:
+    def _deferred(self, name: str) -> st.SearchStrategy:
         def strategy_for_token():
-            return self.strategies[children[0].value]
+            return self.strategies[name]
 
-        strategy_for_token.__name__ = f"strategy_for_token[{children[0].value}]"
+        strategy_for_token.__name__ = f"strategy_for_token[{name}]"
         return st.deferred(strategy_for_token)
 
-    def terminal(self, children) -> st.SearchStrategy:
+    def terminal(self, children: List[Token]) -> st.SearchStrategy:
         return self.strategies[children[0].value]
 
-    def nonterminal(self, children) -> st.SearchStrategy:
-        return self._deferred(children)
+    def nonterminal(self, children: List[Token]) -> st.SearchStrategy:
+        return self._deferred(children[0].value)
 
-    def expansions(self, children) -> List[st.SearchStrategy]:
-        if len(children) == 1:
+    def expansions(
+        self, children: Union[st.SearchStrategy, List[st.SearchStrategy]]
+    ) -> st.SearchStrategy:
+        # (alternation)
+        if isinstance(children, st.SearchStrategy):
             return children
-        else:
-            return [st.one_of(*chain(children[0], [children[1]]))]
-
-    def concatenation(self, children) -> st.SearchStrategy:
-        if len(children) == 1:
+        elif len(children) == 1:
             return children[0]
         else:
+            assert isinstance(children[0], st.SearchStrategy)
+            assert isinstance(children[1], st.SearchStrategy)
+            return st.one_of(children[0], children[1])
+
+    def concatenation(
+        self, children: Union[st.SearchStrategy, List[st.SearchStrategy]]
+    ) -> st.SearchStrategy:
+        if isinstance(children, st.SearchStrategy):
+            return children
+        elif len(children) == 1:
+            return children[0]
+        else:
+            for child in children:
+                assert isinstance(child, st.SearchStrategy)
             return _concat(children)
 
-    def expr(self, children):
-        value, modifier, *params = children
+    def expr(
+        self, children: List[Union[st.SearchStrategy, Token]]
+    ) -> st.SearchStrategy:
+        strategy, modifier, *params = children
         modifier = Modifiers(modifier.value)
         params = [int(p.value) for p in params]
 
@@ -129,14 +150,10 @@ class StrategyBuilder(Transformer):
             min_ = 0
             max_ = 1
 
-        if isinstance(value, st.SearchStrategy):
-            src_strategy = value
-        else:
-            src_strategy = value[0]
+        assert isinstance(strategy, st.SearchStrategy)
+        return _chain(st.lists(strategy, min_size=min_, max_size=max_))
 
-        return _chain(st.lists(src_strategy, min_size=min_, max_size=max_))
-
-    def start(self, _):
+    def start(self, _) -> st.SearchStrategy:
         # 'start' token is the root node of the tree, return result
         return self.strategies[self._start]
 
