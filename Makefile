@@ -1,7 +1,7 @@
 .PHONY: pypi, tag, shell, typecheck, pytest, test
 
 pypi:
-	poetry publish
+	poetry publish --build
 	make tag
 
 tag:
