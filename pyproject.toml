@@ -4,8 +4,9 @@ version = "0.1.0"
 description = "A reverse-parser as a Hypotheses strategy: generate examples from an EBNF grammar"
 authors = ["Anentropic <ego@anentropic.com>"]
 classifiers = [
-	"Development Status :: Pre-Alpha",
-	"Programming Language  :: Python :: 3.7",
+	"Development Status :: 2 - Pre-Alpha",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
     "Framework :: Hypothesis",
 ]
 
