@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "hypothesis-grammar"
-version = "0.1.0"
+version = "0.1.1"
 description = "A reverse-parser as a Hypotheses strategy: generate examples from an EBNF grammar"
 authors = ["Anentropic <ego@anentropic.com>"]
+license = "MIT"
+homepage = "https://github.com/anentropic/hypothesis-grammar"
+readme = "README.md"
 classifiers = [
 	"Development Status :: 2 - Pre-Alpha",
 	"Programming Language :: Python :: 3.7",
