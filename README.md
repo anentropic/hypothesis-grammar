@@ -19,6 +19,8 @@ It is implemented as a [Hypothesis](https://hypothesis.readthedocs.io/) strategy
 
 ## Usage
 
+`pip install hypothesis-grammar`
+
 So, how does this look?
 
 First you need a grammar. Our grammar format is based on that used by the [Lark parser](https://lark-parser.readthedocs.io/en/latest/grammar/) library.  You can see our grammar-parsing grammar [here](hypothesis_grammar/grammar.lark). More details of our grammar format [below](#grammar-details).
