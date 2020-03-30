@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "hypothesis-grammar"
+version = "0.1.0"
+description = ""
+authors = ["Anentropic <ego@anentropic.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+hypothesis = "^5.8.0"
+lark-parser = "^0.8.5"
+inject = "^4.1.1"
+typing-extensions = "^3.7.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+ipython = "^7.13.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

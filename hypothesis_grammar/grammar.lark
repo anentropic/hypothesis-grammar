@@ -1,0 +1,54 @@
+%import common.WS
+%ignore WS
+
+// This is the grammar we use to parse other grammars...
+
+// adapted from the Lark EBNF grammar, translated into .lark format
+// see https://github.com/lark-parser/lark/blob/master/lark/load_grammar.py
+
+// if using the REGEX rule, see description here fro how examples will be generated
+// https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.from_regex
+// (we generate with fullmatch=True)
+
+_LPAR: "("
+_RPAR: ")"
+OP: /[+*]|[?](?![a-z])/
+_COLON: ":"
+_OR: "|"
+_DOTDOT: ".."
+TILDE: "~"
+RULE: /!?[_?]?[a-z][_a-z0-9]*/
+TERMINAL: /_?[A-Z][_A-Z0-9]*/
+STRING: /"(\\"|\\\\|[^"\n])*?"i?/
+REGEXP: /\/(?!\/)(\\\/|\\\\|[^\/\n])*?\/[imslux]*/
+_NL: /(\r?\n)+\s*/
+COMMENT: /\s*\/\/[^\n]*/
+NUMBER: /[+-]?\d+/
+
+start: _list
+_list: _item | _list _item
+_item: rule | term | _NL
+
+rule: RULE _COLON expansions _NL
+expansions: concatenation | expansions _OR concatenation | expansions _NL _OR concatenation
+
+concatenation: _expansion
+
+_expansion: (_expansion expr)?
+
+?expr: atom | atom OP | atom TILDE NUMBER | atom TILDE NUMBER _DOTDOT NUMBER
+
+?atom: _LPAR expansions _RPAR | value
+
+value: terminal | nonterminal | literal | range
+
+terminal: TERMINAL
+nonterminal: RULE
+
+?name: RULE | TERMINAL
+
+range: STRING _DOTDOT STRING
+
+term: TERMINAL _COLON expansions _NL
+
+literal: STRING | REGEXP
