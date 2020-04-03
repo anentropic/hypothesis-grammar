@@ -5,7 +5,6 @@ from typing import Iterable, List, TypeVar, Union
 
 import inject
 from hypothesis import strategies as st
-from hypothesis.strategies._internal.misc import JustStrategy
 from lark import Lark, Token, Transformer
 
 from hypothesis_grammar.types import Deps, Modifiers

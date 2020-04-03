@@ -1,4 +1,4 @@
-from typing import Iterator, List, Tuple
+from typing import List, Tuple
 
 from hypothesis.core import given
 from hypothesis._settings import HealthCheck, Phase, Verbosity, settings
