@@ -3,7 +3,7 @@ from lark import Lark, Tree
 
 from hypothesis_grammar import strategy_from_grammar
 
-from tests.fixtures.grammars import A_BIT_OF_EVERYTHING
+from tests.fixtures.grammars import A_BIT_OF_EVERYTHING, FAILS_LARK_ROUNDTRIP
 
 
 def larkify(grammar: str) -> str:
@@ -37,5 +37,25 @@ def test_roundtrip(example):
         start="s",
     )
     stringified = " ".join(example)
+    result = roundtrip_parser.parse(stringified)
+    assert isinstance(result, Tree)
+
+
+@given(
+    strategy_from_grammar(
+        grammar=FAILS_LARK_ROUNDTRIP,
+        start="s",
+    )
+)
+def test_roundtrip_no_larkify(example):
+    """
+    This fails if we use `larkify` and `" ".join(...)` due to an
+    inconsistency in how Lark `%ignore WS` directive is interpreted.
+    But since our grammar has no explicit handling of whitespace, if
+    we round-trip without that directive and without inserting space
+    between tokens, then it should pass.
+    """
+    roundtrip_parser = Lark(FAILS_LARK_ROUNDTRIP, start="s")
+    stringified = "".join(example)
     result = roundtrip_parser.parse(stringified)
     assert isinstance(result, Tree)
