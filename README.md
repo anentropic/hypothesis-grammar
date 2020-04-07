@@ -7,7 +7,7 @@ Hypothesis-Grammar
 ![Python 3.7](https://img.shields.io/badge/Python%203.7--brightgreen.svg)
 ![Python 3.8](https://img.shields.io/badge/Python%203.8--brightgreen.svg)  
 
-(pre-alpha... the stuff I've tried all works, not well tested yet though)
+(alpha quality... the stuff I've tried all works, some basic tests)
 
 ## What is it?
 
