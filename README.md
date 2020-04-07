@@ -15,7 +15,7 @@ Hypothesis-Grammar is a "reverse parser" - given a grammar it will generate exam
 
 It is implemented as a [Hypothesis](https://hypothesis.readthedocs.io/) strategy.
 
-(If you are looking to generate text from a grammar for purposes other than testing with Hypothesis then this lib can still be useful, but I stongly recommend looking at the [tools provided with NLTK](http://www.nltk.org/howto/generate.html) instead.)
+(If you are looking to generate text from a grammar for purposes other than Property-Based Testing with Hypothesis then this lib can still be useful, but I stongly recommend looking at the [tools provided with NLTK](http://www.nltk.org/howto/generate.html) instead.)
 
 ## Usage
 
