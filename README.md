@@ -9,6 +9,8 @@ Hypothesis-Grammar
 
 (alpha quality... the stuff I've tried all works, some basic tests)
 
+Before you read any further, you should probably just use [`hypothesis.extra.lark.from_lark`](https://hypothesis.readthedocs.io/en/latest/extras.html#hypothesis-lark), a "First-party extension" for Hypothesis that does more or less the same thing.
+
 ## What is it?
 
 Hypothesis-Grammar is a "reverse parser" - given a grammar it will generate examples of that grammar.
