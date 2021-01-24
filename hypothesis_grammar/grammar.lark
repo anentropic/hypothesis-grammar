@@ -6,7 +6,7 @@
 // adapted from the Lark EBNF grammar, translated into .lark format
 // see https://github.com/lark-parser/lark/blob/master/lark/load_grammar.py
 
-// if using the REGEX rule, see description here fro how examples will be generated
+// if using the REGEX rule, see description here for how examples will be generated
 // https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.from_regex
 // (we generate with fullmatch=True)
 
